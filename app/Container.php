@@ -4,11 +4,17 @@ declare(strict_types=1);
 
 namespace App;
 
+use App\Controller\PopulationController;
 use App\Controller\UserValuesController;
+use UserManager\Application\DTO\HttpPopulationQueryDtoAssembler;
+use UserManager\Application\DTO\HttpQueryDTOAssembler;
+use UserManager\Application\PopulationQueryHandler;
 use UserManager\Application\UserValuesCommandHandler;
 use UserManager\Domain\UserValuesValidationService;
 use UserManager\Domain\Validator;
 use UserManager\Infrastructure\PdoUserRepository;
+use UserManager\Infrastructure\PopulationRepository;
+use UserManager\Infrastructure\SqlitePopulationRepository;
 use UserManager\Infrastructure\SqliteUserValueRepository;
 use UserManager\Infrastructure\UserRepository;
 
@@ -50,6 +56,25 @@ class Container
             return new UserValuesCommandHandler(
                 $container->get(UserRepository::class),
                 $container->get(UserValuesValidationService::class)
+            );
+        });
+
+        $this->set(PopulationController::class, function ($container) {
+            return new PopulationController($container->get(PopulationQueryHandler::class));
+        });
+
+        $this->set(PopulationRepository::class, function ($container) {
+            return new SqlitePopulationRepository($container->get(\SQLite3::class));
+        });
+
+        $this->set(HttpPopulationQueryDtoAssembler::class, function () {
+            return new HttpQueryDTOAssembler();
+        });
+
+        $this->set(PopulationQueryHandler::class, function ($container) {
+            return new PopulationQueryHandler(
+                $container->get(PopulationRepository::class),
+                $container->get(HttpPopulationQueryDtoAssembler::class)
             );
         });
     }

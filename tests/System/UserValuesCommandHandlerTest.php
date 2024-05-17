@@ -38,7 +38,7 @@ class UserValuesCommandHandlerTest extends TestCase
         $handler->execute($command);
     }
 
-    public function testSouldValidateSuccess()
+    public function testShouldValidateSuccess()
     {
         $container = new Container();
         $handler = $container->get(UserValuesCommandHandler::class);

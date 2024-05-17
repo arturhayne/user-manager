@@ -4,12 +4,19 @@ require_once __DIR__ . '/app/functions.php';
 require_once 'vendor/autoload.php';
 
 use App\Container;
+use App\Controller\PopulationController;
 use App\Controller\UserValuesController;
 
 $container = new Container();
 
 router('GET', '^/$', function() {
     echo 'It is alive!';
+});
+
+router('GET', '^/population$', function() use ($container) {
+    $controller = $container->get(PopulationController::class);
+    header('Content-Type: application/json');
+    echo $controller->index();
 });
 
 router('POST', '^/user/(?<id>\d+)/validate-values$', function($params) use ($container) {
