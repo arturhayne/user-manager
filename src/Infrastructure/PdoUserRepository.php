@@ -43,7 +43,7 @@ class PdoUserRepository implements UserRepository
 
         $userData = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-        if (isset($userData['user'])) {
+        if (!isset($userData['user']) || empty($userData['user'])) {
             return false;
         }
 

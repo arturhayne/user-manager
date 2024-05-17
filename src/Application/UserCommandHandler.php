@@ -26,7 +26,6 @@ class UserCommandHandler
         }
 
         if ($this->userRepository->hasUser($command->getUserName())) {
-            var_dump('testeee');
             throw new UserNameAlreadyExistsException($command->getUserName());
         }
 
