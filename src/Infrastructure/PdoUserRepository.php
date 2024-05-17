@@ -17,6 +17,39 @@ class PdoUserRepository implements UserRepository
         $this->connection = $connection;
     }
 
+    public function save(User $user): int
+    {
+        $stmt = $this->connection->prepare('
+            INSERT INTO users (population_id, username, password)
+            VALUES (:population_id, :username, :password)
+        ');
+
+        $stmt->execute([
+            ':population_id' => $user->getPopulationId(),
+            ':username' => $user->getUsername(),
+            ':password' => $user->getPassword(),
+        ]);
+
+        return (int) $this->connection->lastInsertId();
+    }
+
+    public function hasUser(string $username): bool
+    {
+        $stmt = $this->connection->prepare('
+            SELECT count(1) as user FROM users WHERE username = :username
+        ');
+        $stmt->bindParam(':username', $username, \PDO::PARAM_STR);
+        $stmt->execute();
+
+        $userData = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        if (isset($userData['user'])) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function find(int $userId): ?User
     {
         $stmt = $this->connection->prepare('SELECT u.*, p.* FROM users u JOIN populations p ON u.population_id = p.id WHERE u.id = :id');
@@ -54,11 +87,9 @@ class PdoUserRepository implements UserRepository
             $population->addPopulationField($populationField);
         }
 
-        return User::createWithPopulation(
-            (int) $userData['population_id'],
+        return User::create(
             $userData['username'],
             $userData['password'],
-            (int) $userData['id'],
             $population
         );
     }
