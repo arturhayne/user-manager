@@ -65,4 +65,28 @@ class SqlitePopulationRepository implements PopulationRepository
 
         return $populations;
     }
+
+    public function find(int $populationId): ?Population
+    {
+        $statement = $this->db->prepare('
+            SELECT 
+                name as population_name
+            FROM 
+                populations 
+            WHERE 
+                id = :populationId
+        ');
+
+        $statement->bindValue(':populationId', $populationId, SQLITE3_INTEGER);
+
+        $result = $statement->execute();
+
+        $population = null;
+
+        if ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+            $population = Population::create($populationId, $row['population_name']);
+        }
+
+        return $population;
+    }
 }

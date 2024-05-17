@@ -8,5 +8,9 @@ use UserManager\Domain\User;
 
 interface UserRepository
 {
+    public function save(User $user): int;
+
+    public function hasUser(string $username): bool;
+
     public function find(int $userId): ?User;
 }

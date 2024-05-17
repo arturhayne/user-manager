@@ -16,7 +16,7 @@ CREATE TABLE population_fields (
 );
 
 CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     population_id int REFERENCES populations,
     username varchar(100) NOT NULL,
     password varchar(100) NOT NULL

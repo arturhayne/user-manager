@@ -12,7 +12,7 @@ class Controller
 
         return json_encode([
             'status' => $code,
-            'error' => json_decode($message),
+            'error' => $message,
         ], JSON_PRETTY_PRINT);
     }
 
