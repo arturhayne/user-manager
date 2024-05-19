@@ -40,12 +40,6 @@ router('POST', '^/population/(?<id>\d+)/user$', function($params) use ($containe
     echo $controller->store($params['id'], $json);
 });
 
-router('GET', '^/user/(?<id>\d+)$', function($params) use ($container) {
-    $controller = $container->get(UserController::class);
-    header('Content-Type: application/json');
-    echo $controller->show($params['id']);
-});
-
 router('POST', '^/user/(?<id>\d+)/validate-values$', function($params) use ($container) {
     $json = json_decode(file_get_contents('php://input'), true);
     $controller = $container->get(UserValuesController::class);
