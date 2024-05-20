@@ -6,9 +6,9 @@ namespace App\Controller;
 
 class Controller
 {
-    protected function error(int $code, string $message)
+    protected function error($code, $message)
     {
-        http_response_code($code);
+        http_response_code((int) $code);
 
         return json_encode([
             'status' => $code,

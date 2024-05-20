@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace UserManager\Tests\Application;
 
+use UserManager\Domain\User;
 use PHPUnit\Framework\TestCase;
+use UserManager\Domain\Population;
+use UserManager\Domain\PopulationField;
+use UserManager\Application\UserCommand;
+use UserManager\Infrastructure\UserRepository;
+use UserManager\Application\UserCommandHandler;
+use UserManager\Domain\UserValuesValidationService;
+use UserManager\Infrastructure\PopulationRepository;
 use UserManager\Application\Exception\NotFoundException;
 use UserManager\Application\Exception\UserNameAlreadyExistsException;
-use UserManager\Application\UserCommand;
-use UserManager\Application\UserCommandHandler;
-use UserManager\Domain\Population;
-use UserManager\Infrastructure\PopulationRepository;
-use UserManager\Infrastructure\UserRepository;
 
 class UserCommandHandlerTest extends TestCase
 {
@@ -19,9 +22,24 @@ class UserCommandHandlerTest extends TestCase
     {
         $userRepositoryMock = $this->createMock(UserRepository::class);
         $populationRepositoryMock = $this->createMock(PopulationRepository::class);
+        $validatorServiceMock = $this->createMock(UserValuesValidationService::class);
 
         $populationId = '1';
         $populationMock = $this->createMock(Population::class);
+        
+        $populationFields = new \Doctrine\Common\Collections\ArrayCollection([
+            new PopulationField(1, 'text', true, true, false, false, 'employeeid', 'Employee ID', 1, true),
+            new PopulationField(2, 'text', true, true, false, false, 'fname', 'First Name', 1, true),
+            new PopulationField(3, 'text', true, true, false, false, 'lname', 'Last Name', 1, true),
+            new PopulationField(4, 'text', true, true, false, false, 'bdate', 'Birth Date', 1, true),
+            new PopulationField(5, 'text', true, true, false, false, 'bplace', 'Birth Place', 1, true),
+            new PopulationField(6, 'email', true, true, false, false, 'email', 'Email', 1, true),
+        ]);
+
+        $populationMock->expects($this->any())
+            ->method('getPopulationFields')
+            ->willReturn($populationFields);
+
         $populationRepositoryMock->expects($this->once())
             ->method('find')
             ->with($populationId)
@@ -31,13 +49,23 @@ class UserCommandHandlerTest extends TestCase
             ->method('hasUser')
             ->willReturn(false);
 
-        $handler = new UserCommandHandler($userRepositoryMock, $populationRepositoryMock);
+        $handler = new UserCommandHandler($userRepositoryMock, $populationRepositoryMock, $validatorServiceMock);
 
         $userData = [
-            'user_name' => 'test_user',
-            'password' => 'test_password',
+            'password' => 'password1234',
+            'user_name' => 'arturhayne',
+            'employeeid' => 'A00513ws',
+            'fname' => 'Jhon',
+            'lname' => 'Doe',
+            'bdate' => '1994-01-23',
+            'bplace' => 'Carignan, QC, Canada',
+            'email' => 'jdocoal2@example.com'
         ];
         $command = UserCommand::create($populationId, $userData);
+
+        $userRepositoryMock->expects($this->once())
+            ->method('save')
+            ->willReturn(1);
 
         $result = $handler->execute($command);
 
@@ -48,6 +76,7 @@ class UserCommandHandlerTest extends TestCase
     {
         $userRepositoryMock = $this->createMock(UserRepository::class);
         $populationRepositoryMock = $this->createMock(PopulationRepository::class);
+        $validatorServiceMock = $this->createMock(UserValuesValidationService::class);
 
         $populationId = '1';
         $populationRepositoryMock->expects($this->once())
@@ -55,11 +84,17 @@ class UserCommandHandlerTest extends TestCase
             ->with($populationId)
             ->willReturn(null);
 
-        $handler = new UserCommandHandler($userRepositoryMock, $populationRepositoryMock);
+        $handler = new UserCommandHandler($userRepositoryMock, $populationRepositoryMock, $validatorServiceMock);
 
         $userData = [
-            'user_name' => 'test_user',
-            'password' => 'test_password',
+            'password' => 'password1234',
+            'user_name' => 'arturhayne',
+            'employeeid' => 'A00513ws',
+            'fname' => 'Jhon',
+            'lname' => 'Doe',
+            'bdate' => '1994-01-23',
+            'bplace' => 'Carignan, QC, Canada',
+            'email' => 'jdocoal2@example.com'
         ];
         $command = UserCommand::create($populationId, $userData);
 
@@ -71,6 +106,7 @@ class UserCommandHandlerTest extends TestCase
     {
         $userRepositoryMock = $this->createMock(UserRepository::class);
         $populationRepositoryMock = $this->createMock(PopulationRepository::class);
+        $validatorServiceMock = $this->createMock(UserValuesValidationService::class);
 
         $populationId = '1';
         $populationMock = $this->createMock(Population::class);
@@ -84,11 +120,17 @@ class UserCommandHandlerTest extends TestCase
             ->method('hasUser')
             ->willReturn(true);
 
-        $handler = new UserCommandHandler($userRepositoryMock, $populationRepositoryMock);
+        $handler = new UserCommandHandler($userRepositoryMock, $populationRepositoryMock, $validatorServiceMock);
 
         $userData = [
-            'user_name' => $userName,
-            'password' => 'test_password',
+            'password' => 'password1234',
+            'user_name' => 'arturhayne',
+            'employeeid' => 'A00513ws',
+            'fname' => 'Jhon',
+            'lname' => 'Doe',
+            'bdate' => '1994-01-23',
+            'bplace' => 'Carignan, QC, Canada',
+            'email' => 'jdocoal2@example.com'
         ];
         $command = UserCommand::create($populationId, $userData);
 

@@ -19,18 +19,40 @@ class PdoUserRepository implements UserRepository
 
     public function save(User $user): int
     {
-        $stmt = $this->connection->prepare('
-            INSERT INTO users (population_id, username, password)
-            VALUES (:population_id, :username, :password)
-        ');
+        try {
+            $this->connection->beginTransaction();
 
-        $stmt->execute([
-            ':population_id' => $user->getPopulationId(),
-            ':username' => $user->getUsername(),
-            ':password' => $user->getPassword(),
-        ]);
+            $stmt = $this->connection->prepare('
+                INSERT INTO users (population_id, username, password)
+                VALUES (:population_id, :username, :password)
+            ');
+            $stmt->execute([
+                ':population_id' => $user->getPopulationId(),
+                ':username' => $user->getUsername(),
+                ':password' => $user->getPassword(),
+            ]);
 
-        return (int) $this->connection->lastInsertId();
+            $userId = (int) $this->connection->lastInsertId();
+
+            foreach ($user->getUserValues() as $userValue) {
+                $stmt = $this->connection->prepare('
+                    INSERT INTO user_values (user_id, field_id, value)
+                    VALUES (:user_id, :field_id, :value)
+                ');
+                $stmt->execute([
+                    ':user_id' => $userId,
+                    ':field_id' => $userValue->getField()->getId(),
+                    ':value' => $userValue->getValue(),
+                ]);
+            }
+
+            $this->connection->commit();
+
+            return $userId;
+        } catch (\Exception $e) {
+            $this->connection->rollBack();
+            throw $e;
+        }
     }
 
     public function hasUser(string $username): bool

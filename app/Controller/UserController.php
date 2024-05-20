@@ -20,6 +20,8 @@ class UserController extends Controller
             return json_encode(['id' => $this->handler->execute(UserCommand::create($populationId, $request))]);
         } catch (\UserManager\Application\Exception\NotFoundException|UserNameAlreadyExistsException $e) {
             return $this->error($e->getCode(), $e->getMessage());
+        } catch (\UserManager\Domain\Exception\InvalidFieldsException $e) {
+            return $this->error($e->getCode(), $e->getErrors());
         } catch (\Throwable $e) {
             return $this->error($e->getCode(), $e->getMessage());
         }

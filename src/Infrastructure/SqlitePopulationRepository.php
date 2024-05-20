@@ -70,11 +70,24 @@ class SqlitePopulationRepository implements PopulationRepository
     {
         $statement = $this->db->prepare('
             SELECT 
-                name as population_name
+                p.id as population_id,
+                p.name as population_name,
+                pf.id as field_id,
+                pf.type,
+                pf.required,
+                pf.isunique,
+                pf.multi,
+                pf.sensitive,
+                pf.name as field_name,
+                pf.dname,
+                pf.population_id,
+                pf.is_unique_across_population
             FROM 
-                populations 
+                populations p
+            LEFT JOIN 
+                population_fields pf ON p.id = pf.population_id
             WHERE 
-                id = :populationId
+                p.id = :populationId
         ');
 
         $statement->bindValue(':populationId', $populationId, SQLITE3_INTEGER);
@@ -82,9 +95,34 @@ class SqlitePopulationRepository implements PopulationRepository
         $result = $statement->execute();
 
         $population = null;
+        $fields = [];
 
-        if ($row = $result->fetchArray(SQLITE3_ASSOC)) {
-            $population = Population::create($populationId, $row['population_name']);
+        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+            if ($population === null) {
+                $population = Population::create($row['population_id'], $row['population_name']);
+            }
+
+            if ($row['field_id'] !== null) {
+                $populationField = new PopulationField(
+                    (int) $row['field_id'],
+                    $row['type'],
+                    (bool) $row['required'],
+                    (bool) $row['isunique'],
+                    (bool) $row['multi'],
+                    (bool) $row['sensitive'],
+                    $row['field_name'],
+                    $row['dname'],
+                    (int) $row['population_id'],
+                    (bool) $row['is_unique_across_population']
+                );
+                $fields[] = $populationField;
+            }
+        }
+
+        if ($population !== null) {
+            foreach ($fields as $field) {
+                $population->addPopulationField($field);
+            }
         }
 
         return $population;

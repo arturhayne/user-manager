@@ -37,6 +37,7 @@ class HttpPopulationQueryDtoAssembler implements \JsonSerializable
             }, $population->getPopulationFields()->toArray());
 
             return [
+                'id' => $population->getId(),
                 'name' => $population->getName(),
                 'fields' => $fields,
             ];
