@@ -6,10 +6,16 @@ class InvalidFieldsException extends \Exception
 {
     protected $code = 400;
 
+    private array $errors;
+
     public function __construct(array $errors)
     {
-        $errorMessage = json_encode($errors);
+        parent::__construct(json_encode($errors), $this->code);
+        $this->errors = $errors;
+    }
 
-        parent::__construct($errorMessage, $this->code);
+    public function getErrors(): array
+    {
+        return $this->errors;
     }
 }

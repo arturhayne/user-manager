@@ -13,9 +13,9 @@ class UserValuesValidationService
     {
     }
 
-    public function validate(array $fields, Collection $rules): void
+    public function validate(array $fields, Collection $populationFields): void
     {
-        $errors = $this->validator->validate($fields, $rules->toArray());
+        $errors = $this->validator->validate($fields, $populationFields->toArray());
         if (!empty($errors)) {
             throw new InvalidFieldsException($errors);
         }

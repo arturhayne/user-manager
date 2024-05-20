@@ -6,12 +6,10 @@ namespace App;
 
 use App\Controller\PopulationController;
 use App\Controller\UserController;
-use App\Controller\UserValuesController;
 use UserManager\Application\DTO\HttpPopulationQueryDtoAssembler;
 use UserManager\Application\DTO\HttpQueryDTOAssembler;
 use UserManager\Application\PopulationQueryHandler;
 use UserManager\Application\UserCommandHandler;
-use UserManager\Application\UserValuesCommandHandler;
 use UserManager\Domain\UserValuesValidationService;
 use UserManager\Domain\Validator;
 use UserManager\Infrastructure\PdoUserRepository;
@@ -54,7 +52,11 @@ class Container
         });
 
         $this->set(UserCommandHandler::class, function ($container) {
-            return new UserCommandHandler($container->get(UserRepository::class), $container->get(PopulationRepository::class));
+            return new UserCommandHandler(
+                $container->get(UserRepository::class),
+                $container->get(PopulationRepository::class),
+                $container->get(UserValuesValidationService::class),
+            );
         });
 
         $this->set(PopulationController::class, function ($container) {
@@ -63,10 +65,6 @@ class Container
 
         $this->set(UserController::class, function ($container) {
             return new UserController($container->get(UserCommandHandler::class));
-        });
-
-        $this->set(UserValuesController::class, function ($container) {
-            return new UserValuesController($container->get(UserValuesCommandHandler::class));
         });
 
         $this->set(SqliteUserValueRepository::class, function ($container) {
@@ -79,13 +77,6 @@ class Container
 
         $this->set(UserValuesValidationService::class, function ($container) {
             return new UserValuesValidationService($container->get(Validator::class));
-        });
-
-        $this->set(UserValuesCommandHandler::class, function ($container) {
-            return new UserValuesCommandHandler(
-                $container->get(UserRepository::class),
-                $container->get(UserValuesValidationService::class)
-            );
         });
     }
 
