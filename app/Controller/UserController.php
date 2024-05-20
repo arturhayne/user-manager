@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use UserManager\Application\Exception\UserNameAlreadyExistsException;
 use UserManager\Application\UserCommand;
 use UserManager\Application\UserCommandHandler;
+use UserManager\Application\Exception\NotFoundException;
+use UserManager\Domain\Exception\InvalidFieldsException;
+use UserManager\Application\Exception\UserNameAlreadyExistsException;
 
 class UserController extends Controller
 {
@@ -18,12 +20,14 @@ class UserController extends Controller
     {
         try {
             return json_encode(['id' => $this->handler->execute(UserCommand::create($populationId, $request))]);
-        } catch (\UserManager\Application\Exception\NotFoundException|UserNameAlreadyExistsException $e) {
+        } catch (UserNameAlreadyExistsException $e) {
             return $this->error($e->getCode(), $e->getMessage());
-        } catch (\UserManager\Domain\Exception\InvalidFieldsException $e) {
+        } catch (NotFoundException $e) {
+            return $this->notFound();
+        } catch (InvalidFieldsException $e) {
             return $this->error($e->getCode(), $e->getErrors());
         } catch (\Throwable $e) {
-            return $this->error($e->getCode(), $e->getMessage());
+            return $this->internalServerError($e->getCode(), $e->getMessage());
         }
     }
 }

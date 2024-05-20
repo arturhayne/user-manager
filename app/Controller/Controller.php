@@ -23,9 +23,14 @@ class Controller
         return false;
     }
 
-    protected function internalServerError()
+    protected function internalServerError($code, $message)
     {
         http_response_code(500);
+
+        return json_encode([
+            'status' => $code,
+            'error' => $message,
+        ], JSON_PRETTY_PRINT);
 
         return false;
     }
