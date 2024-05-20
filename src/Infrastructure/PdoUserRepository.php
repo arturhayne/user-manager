@@ -29,7 +29,7 @@ class PdoUserRepository implements UserRepository
             $stmt->execute([
                 ':population_id' => $user->getPopulationId(),
                 ':username' => $user->getUsername(),
-                ':password' => $user->getPassword(),
+                ':password' => password_hash($user->getPassword(), PASSWORD_BCRYPT),
             ]);
 
             $userId = (int) $this->connection->lastInsertId();

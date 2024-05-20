@@ -18,6 +18,8 @@ class PopulationController extends Controller
             return json_encode($this->handler->execute());
         } catch (\Exception $e) {
             return $this->error($e->getCode(), $e->getMessage());
+        } catch (\Throwable $e) {
+            return $this->internalServerError($e->getCode(), $e->getMessage());
         }
     }
 }
