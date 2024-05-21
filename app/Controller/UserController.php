@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use UserManager\Application\Exception\NotFoundException;
+use UserManager\Application\Exception\UserNameAlreadyExistsException;
 use UserManager\Application\UserCommand;
 use UserManager\Application\UserCommandHandler;
-use UserManager\Application\Exception\NotFoundException;
 use UserManager\Domain\Exception\InvalidFieldsException;
-use UserManager\Application\Exception\UserNameAlreadyExistsException;
 
 class UserController extends Controller
 {

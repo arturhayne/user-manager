@@ -23,7 +23,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE user_values (
-    id SERIAL PRIMARY KEY,
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     field_id int REFERENCES population_fields,
     user_id int REFERENCES users,
     value varchar(100)

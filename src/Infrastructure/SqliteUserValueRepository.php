@@ -30,9 +30,11 @@ class SqliteUserValueRepository implements UserValuesRepository
 
     public function isUniqueAcrossPopulation(string $value, string $fieldName): bool
     {
-        $stmt = $this->db->prepare('SELECT COUNT(*) FROM user_values 
-                                    JOIN population_fields ON user_values.field_id = population_fields.id
-                                    WHERE value = :value AND name = :fieldName');
+        $stmt = $this->db->prepare('SELECT count(1)
+                                    FROM population_fields pf
+                                    JOIN user_values uv ON uv.field_id = pf.id
+                                    WHERE pf.is_unique_across_population = true AND
+                                    value = :value AND name = :fieldName');
         $stmt->bindValue(':value', $value, SQLITE3_TEXT);
         $stmt->bindValue(':fieldName', $fieldName, SQLITE3_TEXT);
 

@@ -15,6 +15,18 @@ INSERT INTO population_fields (id, type, required, isunique, multi, sensitive, n
 	(10, 'text', true, false, false, false, 'lname', 'Last Name', 2),
 	(11, 'email', true, true, false, false, 'email', 'Email Address', 2);
 
+INSERT INTO populations (id, name) VALUES (3, 'Foreign Contractors');
+INSERT INTO population_fields (id, type, required, isunique, multi, sensitive, name, dname, population_id) VALUES
+	(12, 'text', true, true, false, false, 'employeeid', 'Employee ID', 3),
+	(13, 'text', true, false, false, false, 'fname', 'First Name', 3),
+	(14, 'text', true, false, false, false, 'lname', 'Last Name', 3),
+	(15, 'email', true, true, false, false, 'email', 'Email Address', 3);
+
+INSERT INTO populations (id, name) VALUES (4, 'Freelancer');
+INSERT INTO population_fields (id, type, required, isunique, multi, sensitive, name, dname, population_id) VALUES
+	(16, 'text', true, false, false, false, 'fname', 'First Name', 4),
+	(17, 'text', true, false, false, false, 'lname', 'Last Name', 4),
+	(18, 'email', true, true, false, false, 'email', 'Email Address', 4);
 
 INSERT INTO users (id, population_id, username, password) VALUES (1, 1, 'testemployee', '$argon2i$v=19$m=1024,t=2,p=2$YzJBSzV4TUhkMzc3d3laeg$zqU/1IN0/AogfP4cmSJI1vc8lpXRW9/S0sYY2i2jHT0');
 INSERT INTO user_values (user_id, field_id, value) VALUES

@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace UserManager\Tests\Application;
 
-use UserManager\Domain\User;
 use PHPUnit\Framework\TestCase;
-use UserManager\Domain\Population;
-use UserManager\Domain\PopulationField;
-use UserManager\Application\UserCommand;
-use UserManager\Infrastructure\UserRepository;
-use UserManager\Application\UserCommandHandler;
-use UserManager\Domain\UserValuesValidationService;
-use UserManager\Infrastructure\PopulationRepository;
 use UserManager\Application\Exception\NotFoundException;
 use UserManager\Application\Exception\UserNameAlreadyExistsException;
+use UserManager\Application\UserCommand;
+use UserManager\Application\UserCommandHandler;
+use UserManager\Domain\Population;
+use UserManager\Domain\PopulationField;
+use UserManager\Domain\UserValuesValidationService;
+use UserManager\Infrastructure\PopulationRepository;
+use UserManager\Infrastructure\UserRepository;
 
 class UserCommandHandlerTest extends TestCase
 {
@@ -26,7 +25,7 @@ class UserCommandHandlerTest extends TestCase
 
         $populationId = '1';
         $populationMock = $this->createMock(Population::class);
-        
+
         $populationFields = new \Doctrine\Common\Collections\ArrayCollection([
             new PopulationField(1, 'text', true, true, false, false, 'employeeid', 'Employee ID', 1, true),
             new PopulationField(2, 'text', true, true, false, false, 'fname', 'First Name', 1, true),
@@ -59,7 +58,7 @@ class UserCommandHandlerTest extends TestCase
             'lname' => 'Doe',
             'bdate' => '1994-01-23',
             'bplace' => 'Carignan, QC, Canada',
-            'email' => 'jdocoal2@example.com'
+            'email' => 'jdocoal2@example.com',
         ];
         $command = UserCommand::create($populationId, $userData);
 
@@ -94,7 +93,7 @@ class UserCommandHandlerTest extends TestCase
             'lname' => 'Doe',
             'bdate' => '1994-01-23',
             'bplace' => 'Carignan, QC, Canada',
-            'email' => 'jdocoal2@example.com'
+            'email' => 'jdocoal2@example.com',
         ];
         $command = UserCommand::create($populationId, $userData);
 
@@ -130,7 +129,7 @@ class UserCommandHandlerTest extends TestCase
             'lname' => 'Doe',
             'bdate' => '1994-01-23',
             'bplace' => 'Carignan, QC, Canada',
-            'email' => 'jdocoal2@example.com'
+            'email' => 'jdocoal2@example.com',
         ];
         $command = UserCommand::create($populationId, $userData);
 

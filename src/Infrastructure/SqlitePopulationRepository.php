@@ -34,7 +34,7 @@ class SqlitePopulationRepository implements PopulationRepository
                 pf.is_unique_across_population
             FROM 
                 populations p 
-            LEFT JOIN 
+            JOIN 
                 population_fields pf ON p.id = pf.population_id
         ');
 
