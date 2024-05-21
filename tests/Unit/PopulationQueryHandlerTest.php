@@ -20,7 +20,7 @@ class PopulationQueryHandlerTest extends TestCase
         $populationRepositoryMock->expects($this->once())
             ->method('all')
             ->willReturn($populationData);
-        
+
         $dtoAssemblerMock = $this->createMock(PopulationDtoAssembler::class);
         $expectedDtoResponse = [
             [
@@ -38,10 +38,10 @@ class PopulationQueryHandlerTest extends TestCase
             ->method('assemble')
             ->with($populationData)
             ->willReturn($expectedDtoResponse);
-        
+
         $handler = new PopulationQueryHandler($populationRepositoryMock, $dtoAssemblerMock);
         $result = $handler->execute();
-        
+
         $this->assertEquals($expectedDtoResponse, $result);
     }
 }
