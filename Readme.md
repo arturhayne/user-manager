@@ -6,7 +6,7 @@ This project is a PHP-based web application that serves as an API for managing p
 The rules to validate the user values are in the population fields.
 [More info](support/php-tech-test.pdf)
 
-## Front end Projec
+## Front end Project
 The front end project can be found in https://github.com/arturhayne/user-manager-app
 
 ## Changes
