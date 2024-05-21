@@ -39,7 +39,7 @@ Note:
  - if the `is_unique_across_population` is false for certain population, even with same email value, it will not return
 
 ## Add User Flow
-![screenshot](user-manager.png)
+![screenshot](add-user-flow.png)
 
 index -> UserController -> UserCommandHandler -> UserValuesValidationService -> Validator -> Repository
 
